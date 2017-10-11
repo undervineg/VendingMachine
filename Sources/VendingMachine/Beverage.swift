@@ -8,12 +8,11 @@
 import Foundation
 
 class Beverage: Equatable {
-    let brand: String?
-    let weight: Int?
-    let price: Int?
-    let name: String?
-    let manufacturedDate: Date?
-    
+    let brand: String
+    let weight: Int
+    let price: Int
+    let name: String
+    let manufacturedDate: Date
     
     init(brand: String, weight: Int, price: Int, name: String){
         self.brand = brand
@@ -24,7 +23,8 @@ class Beverage: Equatable {
     }
     
     public static func ==(lhs: Beverage, rhs: Beverage) -> Bool{
-        return  lhs.brand == rhs.brand &&
-                lhs.name == rhs.name
+        return lhs.name == rhs.name
     }
 }
+
+
