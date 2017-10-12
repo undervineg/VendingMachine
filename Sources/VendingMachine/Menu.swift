@@ -9,50 +9,51 @@ import Foundation
 
 enum Menu {
     enum Size{
-        case Small, Medium
+        case small, medium
     }
-    case Coke(size: Size)
-    case Vita500
-    case OronaminC
-    case Perrier
-    case Evian
+    case coke(size: Size)
+    case vita500
+    case oronaminC
+    case perrier
+    case evian
     
+    func getMenu(name: String)->Menu?{
+        if self.name == name{
+            switch self {
+            case .coke(size: Size.small): return self
+            case .coke(size: Size.medium): return self
+            case .vita500: return self
+            case .oronaminC: return self
+            case .perrier: return self
+            case .evian: return self
+            }
+        }
+        return nil
+    }
     
     var price: Int{
         switch self {
-        case .Coke(size: Size.Small): return 700
-        case .Coke(size: Size.Medium): return 1500
-        case .Vita500: return 500
-        case .OronaminC: return 1000
-        case .Perrier: return 3000
-        case .Evian: return 1500
+        case .coke(size: Size.small): return 700
+        case .coke(size: Size.medium): return 1500
+        case .vita500: return 500
+        case .oronaminC: return 1000
+        case .perrier: return 3000
+        case .evian: return 1500
         }
     }
     
     var name: String{
         switch self {
-        case .Coke(size: Size.Small): return "코카콜라 250ml"
-        case .Coke(size: Size.Medium): return "코카콜라 500ml"
-        case .Vita500: return "비타500"
-        case .OronaminC: return "오로나민씨"
-        case .Perrier: return "페리에"
-        case .Evian: return "에비앙"
+        case .coke(size: Size.small): return "코카콜라 250ml"
+        case .coke(size: Size.medium): return "코카콜라 500ml"
+        case .vita500: return "비타500"
+        case .oronaminC: return "오로나민씨"
+        case .perrier: return "페리에"
+        case .evian: return "에비앙"
         }
     }
     
-    
-    func getMenuList() ->[Menu]{
-        var menus: [Menu] = []
-        switch self {
-        case .Coke(size: Size.Small): menus.append(self); fallthrough
-        case .Coke(size: Size.Medium): menus.append(self); fallthrough
-        case .Vita500: menus.append(self); fallthrough
-        case .OronaminC: menus.append(self); fallthrough
-        case .Perrier: menus.append(self); fallthrough
-        case .Evian: menus.append(self)
-        }
-        return menus
-    }
+    static let menus: [Menu] = [.coke(size: .small), .coke(size: .medium), .evian, .vita500, .oronaminC, .perrier]
     
 }
 

@@ -1,9 +1,8 @@
 //
 //  ANSICode.swift
-//  HelloSwift
+//  VendingMachinePackageDescription
 //
-//  Created by JK on 07/08/2017.
-//  Copyright © 2017 JK. All rights reserved.
+//  Created by 심 승민 on 2017. 10. 12..
 //
 
 import Foundation

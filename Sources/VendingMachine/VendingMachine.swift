@@ -8,40 +8,17 @@
 import Foundation
 
 struct VendingMachine{
-    private let menu: Menu
     private var balance: Int
-    private var stocks: [Beverage] = []{
-        // stocks가 추가되면 inventory 리스트를 업데이트함
-        didSet{
-            // stock에 더해졌다면
-            if oldValue.count < stocks.count{
-                if let addedItem = oldValue.last{
-                    for inventory in inventoryList{
-                        if let count = inventory[addedItem.name]{
-                            inventoryList.append( [addedItem.name : count+1] )
-                        }
-                    }
-                }
-            }
-        }
-        willSet{
-            // stock에서 판매되었다면
-            if newValue.count < stocks.count{
-                if let soldItem = stocks.last{
-                    for inventory in inventoryList{
-                        if let count = inventory[soldItem.name]{
-                            inventoryList.append( [soldItem.name : count-1] )
-                            let history = "\(Date(timeIntervalSinceNow: 0.0))에 \(soldItem.name)이 판매되었습니다."
-                            histories.append(history)
-                        }
-                    }
-                }
-            }
-        }
-    }
+    private var stocks: [Beverage]
     private var inventoryList: [[String:Int]]
     private var histories: [String]
     
+    init(){
+        balance = 0
+        stocks = []
+        inventoryList = []
+        histories = []
+    }
     
     // 사용자 지급액 추가
     mutating func insertMoney(amountOf amount: Int){
@@ -54,22 +31,33 @@ struct VendingMachine{
         for _ in 0..<amount{
             stocks.append( produce(item) )
         }
+        inventoryList.append([item.name:getInventory(of: item) + amount])
+    }
+    
+    private func getInventory(of item: Menu) -> Int{
+        var count = 0
+        for stock in stocks{
+            if stock.name == item.name{
+                count += 1
+            }
+        }
+        return count
     }
     
     private func produce(_ item: Menu) -> Beverage{
         switch item {
-        case .Coke(size: .Small):
-            return Beverage(brand: "코카콜라 컴퍼니", weight: 250, price: menu.price, name: menu.name)
-        case .Coke(size: .Medium):
-            return Beverage(brand: "코카콜라 컴퍼니", weight: 250, price: menu.price, name: menu.name)
-        case .Vita500:
-            return Beverage(brand: "광동제약", weight: 100, price: menu.price, name: menu.name)
-        case .OronaminC:
-            return Beverage(brand: "동아오츠카", weight: 120, price: menu.price, name: menu.name)
-        case .Perrier:
-            return Beverage(brand: "네슬레", weight: 350, price: menu.price, name: menu.name)
-        case .Evian:
-            return Beverage(brand: "다논", weight: 500, price: menu.price, name: menu.name)
+        case .coke(size: .small):
+            return Beverage(brand: "코카콜라 컴퍼니", weight: 250, price: item.price, name: item.name)
+        case .coke(size: .medium):
+            return Beverage(brand: "코카콜라 컴퍼니", weight: 250, price: item.price, name: item.name)
+        case .vita500:
+            return Beverage(brand: "광동제약", weight: 100, price: item.price, name: item.name)
+        case .oronaminC:
+            return Beverage(brand: "동아오츠카", weight: 120, price: item.price, name: item.name)
+        case .perrier:
+            return Beverage(brand: "네슬레", weight: 350, price: item.price, name: item.name)
+        case .evian:
+            return Beverage(brand: "다논", weight: 500, price: item.price, name: item.name)
         }
     }
     
@@ -78,7 +66,7 @@ struct VendingMachine{
     func getAffordableItemList() -> [String]{
         var affordableBeverages: [String] = []
         
-        for item in menu.getMenuList(){
+        for item in Menu.menus{
             if isPriceAffordable(item){
                 affordableBeverages.append(item.name)
             }
@@ -94,7 +82,13 @@ struct VendingMachine{
         if isPriceAffordable(item) && hasStocks(of: item){
             for (index,beverage) in stocks.enumerated(){
                 if item.name == beverage.name{
-                    return stocks.remove(at: index)
+                    let boughtItem = stocks.remove(at: index)
+                    // 재고에서 해당 상품 1개 차감
+                    
+                    // 히스토리 추가
+                    let history = boughtItem.toString() + " | purchase date: \(Date(timeIntervalSinceNow: 0.0))"
+                    histories.append(history)
+                    return boughtItem
                 }
             }
         }
@@ -102,7 +96,7 @@ struct VendingMachine{
     }
     
     private func isPriceAffordable(_ item: Menu) -> Bool{
-        return (item.price >= balance) ? true : false
+        return (item.price <= balance) ? true : false
     }
     
     private func hasStocks(of item: Menu) -> Bool{
@@ -116,8 +110,10 @@ struct VendingMachine{
     
     
     // 사용자가 입력한 금액에서 구매한 금액을 뺀 나머지 리턴
-    func checkBalance(item: Beverage) -> Int{
-        return balance - item.price
+    mutating func checkBalance(item: Menu?)->Int{
+        guard let selectedItem = item else { return balance }
+        self.balance = balance - selectedItem.price
+        return balance - selectedItem.price
     }
     
     // 현재 남아있는 음료의 재고 리스트(음료명:재고수) 리턴. 품절 표시하기 위함.
@@ -130,17 +126,4 @@ struct VendingMachine{
         return histories
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -25,6 +25,9 @@ class Beverage: Equatable {
     public static func ==(lhs: Beverage, rhs: Beverage) -> Bool{
         return lhs.name == rhs.name
     }
+    
+    func toString()->String{
+        return "brand: \(self.brand) | weight: \(self.weight) | price: \(self.price) | name: \(self.name) | manufactured date: \(self.manufacturedDate)"
+    }
 }
-
 
