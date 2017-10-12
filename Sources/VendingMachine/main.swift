@@ -1,8 +1,9 @@
 import Foundation
 
 
-
+// Vending Machine 생성
 var machine = VendingMachine()
+// 재고 넣기
 machine.add(Menu.coke(size: Menu.Size.small), amountOf: 1)
 machine.add(Menu.coke(size: Menu.Size.medium), amountOf: 10)
 machine.add(Menu.evian, amountOf: 10)
